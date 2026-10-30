@@ -1,0 +1,7 @@
+application,best_filter,key_metric,key_metric_value,no_filter_value,runner_up,runner_up_value,trade_off
+Noise removal (Gaussian noise),gauss_s1,PSNR (dB),35.5564,33.9766,box_3,35.5241,NIR average gradient 0.42x original; spectral angle 2.30 deg; mean NDVI change 0.037
+Noise removal (salt-and-pepper noise),median_3,PSNR (dB),36.489,21.0113,median_5,32.8906,NIR average gradient 0.53x original; spectral angle 2.22 deg; mean NDVI change 0.033
+Land-cover classification,fft_gauss_lp_0.2,Cohen's kappa,0.502,0.4032,gauss_s2,0.5,NIR average gradient 0.26x original; spectral angle 3.16 deg; mean NDVI change 0.052
+Lineament / structural mapping (Aravalli ridges),prewitt,orientation coherence on the ridge,0.5361,0.5099,sobel,0.5347,"edge layer, not a reflectance image; NIR average gradient 2.68x original; spectral angle 19.00 deg; mean NDVI change 0.333"
+Urban boundary delineation,boost_n3_k0.5,built-up boundary F1,0.5453,0.5427,boost_n3_k1.0,0.5366,NIR average gradient 1.35x original; spectral angle 1.20 deg; mean NDVI change 0.019
+Visual interpretation,boost_n3_k1.0,NIR average gradient,0.0417,0.0245,boost_n7_k0.5,0.0364,NIR average gradient 1.70x original; spectral angle 2.52 deg; mean NDVI change 0.039

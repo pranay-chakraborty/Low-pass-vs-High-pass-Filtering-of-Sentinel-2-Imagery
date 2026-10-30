@@ -1,0 +1,330 @@
+% Slides for EES403 Group 1, based on the IISER Mohali Beamer template.
+% Do not edit slides.tex or slides_notes.tex: scripts/build_latex.py generates them
+% from this file and fills every double-angle placeholder from results/tables.
+\documentclass[aspectratio=169, 11pt]{beamer}
+\usetheme{Boadilla}
+\usecolortheme{seahorse}
+\usefonttheme{serif}
+
+\usepackage{graphicx,xcolor}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{booktabs}
+\usepackage{adjustbox}  % trim figures by a fraction of their size
+\usepackage{tikz}
+\usetikzlibrary{positioning, arrows.meta}
+\usepackage{pgfpages}
+\pdfinfoomitdate=1   % no creation date in the PDF metadata
+\pdftrailerid{}
+%NOTES-OPTION%
+
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{caption}{\insertcaption}
+\setbeamerfont{caption}{size=\scriptsize}
+\setbeamerfont{note page}{size=\small}
+\setbeamertemplate{note page}[plain]   % notes text only, no date or breadcrumbs
+\graphicspath{{images/}{../../results/figures/}{../../results/figures/slides/}{../../docs/}}
+
+% one-line take-away at the bottom of a slide
+\newcommand{\takeaway}[1]{\vfill\begin{block}{}\centering #1\end{block}}
+
+\title[LPF vs HPF on Sentinel-2]{Low-pass vs High-pass Filtering\\of Sentinel-2 Imagery}
+\subtitle{Which technique suits which remote sensing task?\\EES403 Course Project}
+\author[Group 1]{\textbf{Group 1}\\[2pt]
+  {\footnotesize Pranay Chakraborty (MS22041),\ Sangeeta Kumari (PH25084),\ Aparna Manoj (MS24070),\\
+   Robin (MS23138),\ Sangam (MS23222)}}
+\institute[IISER Mohali]{\footnotesize Instructors: Dr.\ Chandrakant Ojha and Dr.\ Meenakshi Devi\\[2pt]
+  Department of Earth and Environmental Sciences\\Indian Institute of Science Education and Research, Mohali}
+\date{}
+\titlegraphic{\vspace{-9mm}\includegraphics[width=1.3cm]{iiserm_logo.jpg}}
+
+\begin{document}
+
+% ------------------------------------------------------------------ 1
+\begin{frame}[plain]
+\titlepage
+\end{frame}
+\note{We compared low-pass and high-pass filters on one Sentinel-2 scene of the Aravalli ridge between Gurugram and Faridabad. We implemented every filter ourselves, in the spatial and the frequency domain, and tested them on five measurable questions. The short answer: it depends on the task, and we will show the numbers that decide it.}
+
+% ------------------------------------------------------------------ 2
+\section{Idea}
+\begin{frame}{Spatial frequency: how fast brightness changes across the ground}
+\begin{columns}[T]
+\column{0.40\textwidth}
+\small
+\textbf{Low frequency}: slow change\\
+{\footnotesize fields, water, broad slopes}
+
+\medskip
+\textbf{High frequency}: abrupt change\\
+{\footnotesize roads, roofs, ridge crests, noise}
+
+\bigskip
+\textcolor{blue!70!black}{\textbf{Low-pass (LPF)}}: keep slow change\\
+{\footnotesize = smoothing}
+
+\medskip
+\textcolor{magenta!70!black}{\textbf{High-pass (HPF)}}: keep abrupt change\\
+{\footnotesize HPF = original $-$ LPF}
+
+\medskip
+\textbf{High-boost}: original $+\,k\cdot$HPF\\
+{\footnotesize = sharpening}
+\column{0.60\textwidth}
+\adjincludegraphics[trim={{0.27\width} 0 0 0}, clip, width=\textwidth]{fig06_line_profile.png}\\[-2pt]
+{\scriptsize NIR reflectance along a 1.6 km line on the ridge.}
+\end{columns}
+\takeaway{\small Our question: which of the two is more useful, and \emph{for which job}?}
+\end{frame}
+\note{Frequency here means how often brightness changes as you move across the image. A field changes slowly, a street grid changes every few pixels. A low-pass filter averages neighbours, so slow changes survive and fast ones are smoothed away. A high-pass filter keeps only the fast changes; the textbook remote sensing version is the original minus a smoothed copy. High-boost adds that edge layer back. In the plot, the blue low-pass curves are flatter than the black original and the pink high-boost curves are steeper and overshoot.}
+
+% ------------------------------------------------------------------ 3
+\begin{frame}{Study area: ridges, city and farmland in one scene}
+\centering
+\includegraphics[width=0.9\textwidth]{fig01_study_area.png}
+
+\vspace{2pt}
+\footnotesize
+\begin{tabular}{@{}ll@{}}
+\textbf{Area}: Aravalli ridge, Gurugram--Faridabad, 25 $\times$ 23 km &
+\textbf{Scene}: Sentinel-2 L2A, <<acq_date>>, best of <<n_candidates>> \\
+\textbf{Bands}: blue, green, red, NIR at 10 m &
+\textbf{Reference}: ESA WorldCover 2021 land cover \\
+\end{tabular}
+\end{frame}
+\note{We chose this area because one scene holds three very different textures: folded quartzite ridges with long linear features, the dense Gurugram street grid, and smooth crop parcels. The scene was selected by our code, not by eye. Scene-wide cloud cover was near zero for almost all candidates, but inside our area the cloudy or hazy share went up to <<bad_max>> percent because of winter smog. The chosen scene has only <<bad_pct>> percent flagged pixels.}
+
+% ------------------------------------------------------------------ 4
+\section{Method}
+\begin{frame}{What we did}
+\centering
+\begin{tikzpicture}[
+    box/.style={draw=structure, fill=structure!8, rounded corners=3pt, align=center,
+                minimum height=1.55cm, text width=2.55cm, font=\footnotesize},
+    arr/.style={-{Stealth[length=2.5mm]}, thick, structure}]
+\node[box] (data) {\textbf{Data}\\Sentinel-2 scene\\4 bands, 10 m};
+\node[box, right=0.55cm of data] (filt) {\textbf{<<n_filters>> filters}\\written in NumPy\\checked vs.\ SciPy};
+\node[box, right=0.55cm of filt] (test) {\textbf{5 tests}\\E1 noise\quad E2 classes\\E3 edges\quad E4 spectra\\E5 speed};
+\node[box, right=0.55cm of test] (dec) {\textbf{Decision matrix}\\best filter\\per application};
+\draw[arr] (data) -- (filt);
+\draw[arr] (filt) -- (test);
+\draw[arr] (test) -- (dec);
+\end{tikzpicture}
+
+\vspace{0.5cm}
+\begin{columns}[T]
+\column{0.48\textwidth}
+\begin{block}{Spatial domain: slide a kernel}
+\small
+$g(x,y)=\sum_{s,t} w(s,t)\, f(x-s,\,y-t)$\\[3pt]
+\footnotesize mean, Gaussian, median; HPF, Laplacian, Sobel, Prewitt; high-boost
+\end{block}
+\column{0.48\textwidth}
+\begin{block}{Frequency domain: mask the spectrum}
+\small
+$g=\mathcal{F}^{-1}\{H(u,v)\cdot\mathcal{F}\{f\}\}$\\[3pt]
+\footnotesize ideal, Butterworth, Gaussian masks; HPF mask $=1-H$
+\end{block}
+\end{columns}
+\end{frame}
+\note{The pipeline has four steps. We implemented every filter in plain NumPy and checked each against SciPy; the largest difference is below ten to the minus five. Filters come in two routes. In the spatial domain a small grid of weights slides over the image. In the frequency domain we take the Fourier transform, multiply by a mask that keeps some frequencies and removes others, and transform back. Then five experiments measure noise removal, classification, edges, spectral change and speed, and the decision matrix picks the winner for each task.}
+
+% ------------------------------------------------------------------ 5
+\begin{frame}{Frequency domain: the lecture example, reproduced on our scene}
+\centering
+\includegraphics[height=0.66\textheight]{fig04_slide_square_masks.png}
+\takeaway{\small Smaller mask $\Rightarrow$ fewer frequencies kept $\Rightarrow$ blurrier image, with ripples}
+\end{frame}
+\note{This is the example from the course slides, with square ideal masks of 61, 91 and 121 pixels, applied to a 512 by 512 crop of our scene. The top row shows the spectrum and the masks: white means pass. The bottom row shows the result. The smallest mask keeps the fewest frequencies and gives the blurriest image. Note the ripple texture in all three; we come back to that in two slides.}
+
+% ------------------------------------------------------------------ 6
+\section{Results}
+\begin{frame}{Low-pass filters smooth texture and blur boundaries}
+\centering
+\includegraphics[width=\textwidth]{slide_lpf.png}
+\takeaway{\small Broad ridge shape survives; street grid and field edges are lost. Median keeps edges best.}
+\end{frame}
+\note{Two 2 kilometre windows, ridge on top and Gurugram below, all with the same colour stretch. The mean and Gaussian blur the street grid. The median keeps straight edges a little sharper because it picks an existing value instead of averaging across the edge. In the frequency domain, the ideal mask leaves a ripple texture while the Gaussian mask looks just like the spatial Gaussian, which is expected because they are the same filter.}
+
+% ------------------------------------------------------------------ 7
+\begin{frame}{High-pass filters keep only the edges}
+\centering
+\includegraphics[width=\textwidth]{slide_hpf_edges.png}
+\takeaway{\small Flat ground turns grey. Sobel and the $7\times7$ HPF trace ridge crests; the Laplacian picks up speckle.}
+\end{frame}
+\note{These are pure high-pass layers of the near-infrared band. Uniform areas go to mid-grey and only the changes remain. The 7 by 7 HPF and the low-cutoff frequency HPF bring out the ridge crests, and Sobel shows edge strength in any direction. The Laplacian reacts most to the finest speckle. In practice an analyst adds these layers back to the image, which is the high-boost filter we test later.}
+
+% ------------------------------------------------------------------ 8
+\begin{frame}{A sharp cut in frequency causes ringing}
+\centering
+\adjincludegraphics[trim={0 0 0 {0.52\height}}, clip, width=0.9\textwidth]{fig05_ringing.png}
+
+\vspace{4pt}
+\small
+\begin{tabular}{lccc}
+\toprule
+Mask ($D_0=0.1$) & Ideal & Butterworth & Gaussian \\
+\midrule
+Overshoot at a step edge & \textbf{<<ring_ideal>>\%} & <<ring_butter>>\% & <<ring_gauss>>\% \\
+\bottomrule
+\end{tabular}
+\takeaway{\small Never use the ideal mask. Gaussian or Butterworth masks are safe.}
+\end{frame}
+\note{Real scene texture hides the ripples, so we pushed a clean step edge through the same filter code. The ideal mask cuts frequencies off sharply, and that always produces ripples beside edges, the Gibbs effect. It overshoots by <<ring_ideal>> percent of the step, close to the nine percent theory predicts. Butterworth overshoots <<ring_butter>> percent and Gaussian <<ring_gauss>>.}
+
+% ------------------------------------------------------------------ 9
+\begin{frame}{E1 Noise: the right filter depends on the type of noise}
+\begin{columns}[T, totalwidth=\textwidth]
+\column{0.48\textwidth}
+\begin{block}{Random (Gaussian) noise}
+\centering\small
+\begin{tabular}{lr}
+Noisy input & <<e1_g_noisy>> dB \\
+\textbf{<<p:e1_g_best>>} & \textbf{<<e1_g_best_psnr>> dB} \\
+<<p:e1_g_second>> & <<e1_g_second_psnr>> dB \\
+\end{tabular}
+
+\medskip
+\footnotesize <<e1_g_n_worse>> of <<e1_g_n_lpf>> filters made it \emph{worse}
+\end{block}
+\column{0.48\textwidth}
+\begin{block}{Salt-and-pepper noise}
+\centering\small
+\begin{tabular}{lr}
+Noisy input & <<e1_sp_noisy>> dB \\
+\textbf{<<p:e1_sp_best>>} & \textbf{<<e1_sp_best_psnr>> dB} \\
+<<p:e1_sp_lin>> & <<e1_sp_lin_psnr>> dB \\
+\end{tabular}
+
+\medskip
+\footnotesize median beats the best linear filter by <<e1_sp_gap>> dB
+\end{block}
+\end{columns}
+\takeaway{\small PSNR against the clean image, higher is better. Light filters only: large kernels remove detail along with noise.}
+\end{frame}
+\note{We added two kinds of noise to a clean crop and measured how close each filtered result came to the clean image. With random noise only the lightest smoothing helped, and most filters made things worse because they removed real detail too. With salt-and-pepper noise, the median was in a class of its own: a mean or Gaussian spreads each spike over its neighbours, while the median simply throws it away.}
+
+% ------------------------------------------------------------------ 10
+\begin{frame}{E2 Classification: smoothing gives more accurate, cleaner maps}
+\centering
+\adjincludegraphics[trim={0 0 0 {0.06\height}}, clip, width=\textwidth]{fig07_classification_maps.png}
+
+\small
+Cohen's $\kappa$ on held-out blocks: raw <<e2_raw_kappa>> $\rightarrow$ \textbf{best LPF <<e2_best_kappa>>}; best high-boost <<e2_hb_best_kappa>>
+\takeaway{\small Smoothing removes within-class variation (roof types, shadows) before the classifier sees it.}
+\end{frame}
+\note{We trained a Random Forest on the four bands plus NDVI, with WorldCover as the reference, after each filter. Training and test pixels come from separate 128 by 128 pixel blocks, because neighbouring pixels are near-copies and a random split would inflate accuracy. Every low-pass input beat the raw bands. The best raised kappa from <<e2_raw_kappa>> to <<e2_best_kappa>> and cut the map speckle index from <<e2_raw_sp>> to <<e2_best_sp>>. High-boost made it worse, at best <<e2_hb_best_kappa>>.}
+
+% ------------------------------------------------------------------ 11
+\begin{frame}{E3, E4: high-pass finds edges, but the output is no longer reflectance}
+\begin{columns}[T, totalwidth=\textwidth]
+\column{0.48\textwidth}
+\begin{block}{Edges and lineaments (NIR)}
+\footnotesize
+\begin{tabular}{lcc}
+ & Original & Best \\
+\midrule
+Boundary F1 & <<e3_orig_f1>> & \textbf{<<e3_hb_best_f1>>} \\
+ & & {\scriptsize high-boost} \\
+Ridge coherence & <<e3_coh_orig>> & \textbf{<<e3_coh_prewitt>>} \\
+ & & {\scriptsize Prewitt} \\
+\end{tabular}
+
+\medskip
+Smoothing lowers boundary F1 (<<e3_box5_f1>> for mean $5\times5$)
+\end{block}
+\column{0.48\textwidth}
+\begin{block}{Cost: change to the spectrum}
+\footnotesize
+\begin{tabular}{lr}
+ & Spectral angle \\
+\midrule
+High-boost $n=3$, $k=0.5$ & <<e4_hb05_sam>>$^\circ$ \\
+Median $3\times3$ & <<e4_med3_sam>>$^\circ$ \\
+Gaussian $\sigma=1$ & <<e4_g1_sam>>$^\circ$ \\
+Pure HPF layers & $\approx$ <<e4_hpf_sam>>$^\circ$ \\
+\end{tabular}
+\end{block}
+\end{columns}
+\takeaway{\small Use HPF products as \emph{extra layers} beside the bands, never in place of them.}
+\end{frame}
+\note{For edges the picture flips. Canny edges from high-boost images match the WorldCover boundaries better than the original, while smoothing removes edges. For the ridges we measured orientation coherence, which is high when local gradients line up; the gradient operators Prewitt and Sobel gave the clearest linear structure. The cost is on the right: light filters change the spectrum by one or two degrees, but a pure high-pass layer is no longer a reflectance image, so it must stay a separate layer.}
+
+% ------------------------------------------------------------------ 12
+\begin{frame}{E5 Speed: FFT cost is flat, convolution cost grows with the kernel}
+\begin{columns}[c]
+\column{0.58\textwidth}
+\includegraphics[width=\textwidth]{fig08_e5_runtime.png}
+\column{0.42\textwidth}
+\small
+One full band, <<e5_shape>> pixels:
+\begin{itemize}
+\item Spatial $3\times3$: <<e5_box3>> s
+\item Spatial $49\times49$: <<e5_g8>> s
+\item Any FFT mask: <<e5_fft_min>>--<<e5_fft_max>> s
+\end{itemize}
+\medskip
+Break-even near a <<e5_cross>>-pixel kernel
+\end{columns}
+\takeaway{\small Small kernels: convolve. Large kernels or many cutoffs: use the FFT.}
+\end{frame}
+\note{Spatial cost grows with the square of the kernel side; the Fourier route costs about the same whatever the mask. Below a kernel of about <<e5_cross>> pixels convolution is faster, above it the FFT wins. Since the filters that worked best are small, convolution is usually the practical choice.}
+
+% ------------------------------------------------------------------ 13
+\section{Conclusion}
+\begin{frame}{The answer: one best filter per application}
+\centering
+\footnotesize
+\begin{tabular}{lll}
+\toprule
+Application & Best filter & Evidence (best vs.\ no filter) \\
+\midrule
+<<decision_table_slides>>
+\bottomrule
+\end{tabular}
+\takeaway{\small\textcolor{blue!70!black}{\textbf{Low-pass}} when pixel values feed a calculation;\quad \textcolor{magenta!70!black}{\textbf{High-pass}} when edges and structure are the point.}
+\end{frame}
+\note{This table is generated by our code from the experiment results. Each row uses one measure. Some gains are large, like the median on impulse noise or the Gaussian for classification. Some are small, like urban boundaries, and we report them as small. The pattern is clear: low-pass filtering wins wherever per-pixel values are used for a calculation, and high-pass filtering wins wherever the task is about where things change.}
+
+% ------------------------------------------------------------------ 14
+\begin{frame}{Take-home message}
+\begin{columns}[T, totalwidth=\textwidth]
+\column{0.48\textwidth}
+\begin{block}{Quantitative work}
+\small
+classification, indices, change detection\\[3pt]
+$\Rightarrow$ light \textbf{Gaussian} ($\sigma\approx1.5$--2 px)\\
+$\Rightarrow$ \textbf{median $3\times3$} for impulse noise
+\end{block}
+\column{0.48\textwidth}
+\begin{block}{Interpretation and mapping}
+\small
+visual analysis, lineaments, boundaries\\[3pt]
+$\Rightarrow$ \textbf{high-boost} $k=0.5$--1 for display\\
+$\Rightarrow$ \textbf{Sobel / Prewitt} for lineaments
+\end{block}
+\end{columns}
+\medskip
+\begin{alertblock}{Avoid}
+\small the ideal frequency mask (ringing), and heavy smoothing (detail goes before noise)
+\end{alertblock}
+
+\medskip
+\centering
+\footnotesize Live demo:\ \texttt{python -m rsfilter demo}\quad (offline, 512 $\times$ 512 sample, about one minute)
+
+\vspace{6pt}
+\large\textbf{Thank you. Questions?}
+\end{frame}
+\note{So, which technique is most suitable? For anything quantitative, use a light low-pass filter: a small Gaussian, or a 3 by 3 median when there is impulse noise. For interpretation and structural mapping, keep the bands and add a high-pass product beside them: high-boost for display, Sobel or Prewitt for lineaments. Never use the ideal mask. We will now run the demo, which repeats the pipeline on the sample crop in about a minute.}
+
+% ------------------------------------------------------------------ 15
+\section*{References}
+\begin{frame}{References}
+\nocite{*}
+\tiny
+\setbeamertemplate{bibliography item}{}
+\bibliographystyle{amsalpha}
+\bibliography{references}
+\end{frame}
+
+\end{document}

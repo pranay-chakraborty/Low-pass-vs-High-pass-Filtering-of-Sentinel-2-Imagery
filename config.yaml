@@ -1,0 +1,84 @@
+# Project configuration. Every script reads this file; change values here, not in code.
+
+seed: 42
+
+aoi:
+  name: "Aravalli ridge, Gurugram-Faridabad (Haryana, India)"
+  bbox: [77.05, 28.30, 77.30, 28.50]   # west, south, east, north (WGS84)
+  crs: "EPSG:32643"                     # UTM 43N, output grid
+  resolution: 10                        # metres
+
+scene:
+  date_start: "2024-11-01"              # primary search window: post-monsoon winter, usually the clearest skies
+  date_end: "2025-03-01"                # end date is exclusive, so this includes 28 Feb
+  fallback_start: "2024-10-01"          # used only if no scene in the primary window qualifies
+  fallback_end: "2025-04-01"
+  max_scene_cloud: 5.0                  # scene-wide CLOUDY_PIXEL_PERCENTAGE limit (%)
+  cloud_prob_threshold: 40              # s2cloudless probability (%) above which a pixel counts as cloud
+  aoi_bad_tolerance: 0.5                # scenes within this many % points of the cleanest are treated as tied
+  n_quicklook_candidates: 8             # candidates shown in the comparison sheet
+
+bands: [B2, B3, B4, B8]                 # blue, green, red, NIR (all 10 m)
+band_names: [blue, green, red, nir]
+
+paths:
+  raw: data/raw
+  processed: data/processed
+  sample: data/sample
+  figures: results/figures
+  tables: results/tables
+  maps: results/maps
+  demo: results/demo
+
+sample_crop_size: 512
+
+# Sub-areas used for figure insets and per-region edge metrics: centre (row, col) in
+# full-AOI pixels, square size in pixels. Picked by eye from the false-colour quick-look.
+insets:
+  ridge:    {row: 1250, col: 1250, size: 200}   # parallel Aravalli quartzite ridges
+  urban:    {row: 460,  col: 230,  size: 200}   # Gurugram street grid
+  cropland: {row: 1930, col: 2120, size: 200}   # small field parcels, SE of the AOI
+
+filters:
+  box_sizes: [3, 5, 7, 9]
+  gaussian_sigmas: [1, 2, 3]
+  median_sizes: [3, 5]
+  hpf_sizes: [3, 5, 7]
+  boost_k: [0.5, 1.0, 1.5]
+  freq_cutoffs: [0.1, 0.2, 0.3]         # fraction of the Nyquist frequency
+  butterworth_order: 2
+  fft_pad: 64                           # reflect padding (pixels) before the FFT
+  square_mask_sides: [61, 91, 121]      # slide replication on the 512 x 512 crop
+
+experiments:
+  e1_gauss_sigma: 0.02                  # reflectance units
+  e1_salt_pepper_fraction: 0.02
+  e2_classes:                           # WorldCover code -> regrouped class
+    Trees: [10]
+    Shrub/Grass: [20, 30]
+    Cropland: [40]
+    Built-up: [50]
+    Bare/Mining: [60]
+    Water: [80, 90]
+  e2_min_class_fraction: 0.005
+  e2_block: 128
+  e2_train_fraction: 0.7
+  e2_train_per_class: 2000
+  e2_trees: 200
+  canny_sigma: 1.0
+  canny_low: 0.10                       # hysteresis thresholds on the Sobel magnitude of the
+  canny_high: 0.20                      # smoothed NIR band (reflectance units); ~13 % edge pixels on the raw AOI
+  boundary_tolerance: 2                 # pixels
+  coherence_rho: 2                      # structure-tensor window sigma (pixels), below the 100-300 m ridge spacing
+  e5_runs: 5
+  e5_box_sizes: [3, 5, 7, 9, 15, 21, 31]
+  e5_gauss_sigmas: [1, 2, 3, 5, 8]
+  # Visual-interpretation rule in the decision matrix: the sharpest image-type
+  # output whose spectral distortion stays within these limits (E4).
+  visual_max_sam_deg: 5.0
+  visual_max_ndvi_change: 0.05
+
+# Line profile across a sharp edge (figure 6) and ringing zoom (figure 5):
+# a bright cleared pad on the ridge, surrounded by vegetated slopes.
+profile: {row: 1020, col_start: 2020, col_end: 2180}
+ringing_window: {row: 1020, col: 2100, size: 160}

@@ -1,0 +1,57 @@
+{
+  "backend": "gee",
+  "collection": "COPERNICUS/S2_SR_HARMONIZED",
+  "image_id": "COPERNICUS/S2_SR_HARMONIZED/20241204T053119_20241204T053602_T43RGM",
+  "product_id": "S2B_MSIL2A_20241204T053119_N0511_R105_T43RGM_20241204T074212",
+  "mgrs_tile": "43RGM",
+  "acquisition_date": "2024-12-04",
+  "acquisition_datetime_utc": "2024-12-04T05:41:03.990000+00:00",
+  "processing_baseline": "05.11",
+  "scene_cloud_pct": 0.0005,
+  "aoi_cloud_metrics_pct": {
+    "cloud_pct": 0.0001,
+    "cirrus_pct": 0.0012,
+    "shadow_pct": 0.0,
+    "nodata_pct": 0.0,
+    "prob_pct": 0.0818,
+    "bad_pct": 0.0829
+  },
+  "aoi_aot_mean": 0.1641,
+  "search_window": "2024-11-01 to 2025-03-01 (end exclusive)",
+  "n_candidates": 11,
+  "selection_rationale": "11 Sentinel-2 L2A scenes covering the AOI were found for 2024-11-01 to 2025-03-01 (end exclusive) with scene-wide cloud cover below the limit. Each was scored inside the AOI only. The cleanest scene had 0.08 % of AOI pixels flagged as cloud, cirrus, cloud shadow or no data; 3 scene(s) were within 0.5 percentage points of that and were treated as equally clean. Among those, the scene with the lowest mean aerosol optical thickness (AOT 0.164) was chosen to limit winter haze. Selected: 2024-12-04 with 0.08 % flagged AOI pixels (SCL cloud 0.00 %, cirrus 0.00 %, shadow 0.00 %, no data 0.00 %). s2cloudless flagged 0.08 % of AOI pixels.",
+  "dn_offset": 0,
+  "reflectance_formula": "(DN - 0) / 10000, clipped to [0, 1]; DN 0 in all bands = no data",
+  "bands": {
+    "B2": "blue",
+    "B3": "green",
+    "B4": "red",
+    "B8": "nir"
+  },
+  "crs": "EPSG:32643",
+  "pixel_size_m": 10,
+  "width": 2491,
+  "height": 2261,
+  "bounds_utm": [
+    700640.0,
+    3132140.0,
+    725550.0,
+    3154750.0
+  ],
+  "aoi_bbox_wgs84": [
+    77.05,
+    28.3,
+    77.3,
+    28.5
+  ],
+  "worldcover": "ESA/WorldCover/v200 (GEE)",
+  "download_timestamp_utc": "2026-10-25T12:07:51+00:00",
+  "backend_errors": {},
+  "sample_window": {
+    "row_off": 1024,
+    "col_off": 256,
+    "size": 512,
+    "class_entropy_bits": 2.44,
+    "selection": "512 x 512 window with the highest WorldCover class entropy"
+  }
+}

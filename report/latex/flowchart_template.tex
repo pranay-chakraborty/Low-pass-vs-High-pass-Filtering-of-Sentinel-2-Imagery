@@ -1,0 +1,99 @@
+% Processing flowchart (Figure 3.1 of the report, and docs/flowchart.pdf/.png).
+% scripts/build_latex.py fills the double-angle placeholders and compiles it.
+\documentclass[border=6pt]{standalone}
+\usepackage{mathptmx}
+\usepackage[T1]{fontenc}
+\usepackage{tikz}
+\pdfinfoomitdate=1
+\pdftrailerid{}
+\usetikzlibrary{positioning, arrows.meta, fit, backgrounds, calc}
+
+\definecolor{cdata}{HTML}{2B6CB0}
+\definecolor{cfilt}{HTML}{C05621}
+\definecolor{ctest}{HTML}{2F855A}
+\definecolor{cans}{HTML}{4A5568}
+% module that does the step, printed in grey at the bottom of a box
+\newcommand{\code}[1]{\\[2pt]{\scriptsize\ttfamily\color{black!50}#1}}
+
+\begin{document}
+\begin{tikzpicture}[
+    box/.style={draw=#1, fill=white, line width=0.7pt, rounded corners=2pt, align=center,
+                font=\footnotesize, inner sep=4pt, minimum height=13mm},
+    arr/.style={-{Stealth[length=2.2mm]}, line width=0.6pt, black!60},
+    line/.style={line width=0.6pt, black!60},
+    lane/.style={fill=#1!6, draw=#1!40, rounded corners=4pt, inner xsep=7pt, inner ysep=6pt},
+    tag/.style={font=\small\bfseries, text=#1, rotate=90, anchor=south, inner sep=3pt}]
+
+% ---------------------------------------------------------------- 1 Data
+\node[box=cdata, minimum height=15mm, text width=30mm] (d1) {Search Sentinel-2 L2A\\Nov 2024 -- Feb 2025\code{data.py}};
+\node[box=cdata, minimum height=15mm, text width=30mm, right=5mm of d1] (d2) {Score scenes inside the\\area: cloud, haze, no data\code{data.py}};
+\node[box=cdata, minimum height=15mm, text width=30mm, right=5mm of d2] (d3) {Download 4 bands\\and ESA WorldCover\code{data.py}};
+\node[box=cdata, minimum height=15mm, text width=30mm, right=5mm of d3] (d4) {Reflectance = DN/10000\\512 $\times$ 512 sample crop\code{preprocess.py}};
+\draw[arr] (d1) -- (d2);
+\draw[arr] (d2) -- (d3);
+\draw[arr] (d3) -- (d4);
+
+% ---------------------------------------------------------------- 2 Filter
+\coordinate (mid) at ($(d1.west)!0.5!(d4.east)$);
+\node[box=cfilt, text width=66mm, anchor=north east] (sp) at ($(mid)+(-2.5mm,-27mm)$)
+    {\textbf{Spatial domain}: slide a kernel over the image\\[1pt]
+     Low-pass: mean, Gaussian, median\\
+     High-pass: original $-$ mean, Laplacian, Sobel, Prewitt\\
+     High-boost: original $+\;k\cdot$HPF\code{filters\_spatial.py}};
+\node[box=cfilt, text width=66mm, anchor=north west] (fq) at ($(mid)+(2.5mm,-27mm)$)
+    {\textbf{Frequency domain}: mask the spectrum\\[1pt]
+     pad $\rightarrow$ FFT $\rightarrow$ $\times\,H(u,v)$ $\rightarrow$ inverse FFT\\
+     Ideal, Butterworth, Gaussian masks; HPF $= 1-H$\\
+     Square masks 61, 91, 121 px (course slide)\code{filters\_freq.py}};
+\coordinate (bus1) at ($(d4.south)+(0,-6mm)$);
+\draw[line] (d4.south) -- (bus1) -- (sp.north|-bus1);
+\draw[arr] (sp.north|-bus1) -- (sp.north);
+\draw[arr] (fq.north|-bus1) -- (fq.north);
+
+\node[box=cfilt, text width=80mm, minimum height=10mm, anchor=north] (bank) at ($(mid)+(0,-62mm)$)
+    {\textbf{Filter bank}: <<n_filters>> configurations, each checked against SciPy\code{bank.py}};
+\coordinate (bus2) at ($(bank.north)+(0,4mm)$);
+\draw[line] (sp.south) -- (sp.south|-bus2) -- (fq.south|-bus2) -- (fq.south);
+\draw[arr] (bus2) -- (bank.north);
+
+% ---------------------------------------------------------------- 3 Test
+\node[box=ctest, minimum height=15mm, text width=24mm, anchor=north] (e3) at ($(bank.south)+(0,-14mm)$) {\textbf{E3} Edges\\Canny F1, ridge\\coherence};
+\node[box=ctest, minimum height=15mm, text width=24mm, left=4mm of e3]  (e2) {\textbf{E2} Land cover\\Random Forest,\\kappa};
+\node[box=ctest, minimum height=15mm, text width=24mm, left=4mm of e2]  (e1) {\textbf{E1} Noise\\PSNR, SSIM};
+\node[box=ctest, minimum height=15mm, text width=24mm, right=4mm of e3] (e4) {\textbf{E4} Spectra\\spectral angle,\\NDVI change};
+\node[box=ctest, minimum height=15mm, text width=24mm, right=4mm of e4] (e5) {\textbf{E5} Speed\\spatial vs.\ FFT\\run time};
+\coordinate (bus3) at ($(bank.south)+(0,-7mm)$);
+\draw[line] (bank.south) -- (bus3);
+\draw[line] (e1.north|-bus3) -- (e5.north|-bus3);
+\foreach \e in {e1,e2,e3,e4,e5} \draw[arr] (\e.north|-bus3) -- (\e.north);
+\node[font=\scriptsize\ttfamily, text=black!50, anchor=north] at ($(e3.south)+(0,-1mm)$) {experiments.py, metrics.py, classify.py};
+
+% ---------------------------------------------------------------- 4 Decide
+\node[box=cans, text width=62mm, minimum height=10mm, anchor=north] (dm) at ($(e3.south)+(-21mm,-15mm)$)
+    {\textbf{Decision matrix}: best filter per application\code{results/tables/*.csv}};
+\node[box=cans, text width=34mm, minimum height=10mm, right=6mm of dm] (out) {Report and slides\code{build\_latex.py}};
+\coordinate (bus4) at ($(e3.south)+(0,-8mm)$);
+\foreach \e in {e1,e2,e4,e5} \draw[line] (\e.south) -- (\e.south|-bus4);
+\draw[line] (e1.south|-bus4) -- (e5.south|-bus4);
+\draw[arr] (dm.north|-bus4) -- (dm.north);
+\draw[arr] (dm) -- (out);
+
+% ---------------------------------------------------------------- lanes
+\begin{scope}[on background layer]
+  % every lane spans the same width: the widest row (filters) sets it
+  \coordinate (xl) at (e1.west);
+  \coordinate (xr) at (e5.east);
+  \node[lane=cdata, fit={(d1)(d4)(xl|-d1.north)(xr|-d1.south)}] (L1) {};
+  \node[lane=cfilt, fit={(sp)(fq)(bank)(xl|-sp.north)(xr|-bank.south)}] (L2) {};
+  \node[lane=ctest, fit={(e1)(e5)($(e3.south)+(0,-4mm)$)(xl|-e1.north)(xr|-e1.south)}] (L3) {};
+  \node[lane=cans,  fit={(dm)(out)(xl|-dm.north)(xr|-dm.south)}] (L4) {};
+\end{scope}
+% align all lane tags on one vertical line
+\coordinate (tagx) at ($(L1.west)+(-1mm,0)$);
+\node[tag=cdata] at (tagx|-L1.center) {1 Data};
+\node[tag=cfilt] at (tagx|-L2.center) {2 Filter};
+\node[tag=ctest] at (tagx|-L3.center) {3 Test};
+\node[tag=cans]  at (tagx|-L4.center) {4 Decide};
+
+\end{tikzpicture}
+\end{document}

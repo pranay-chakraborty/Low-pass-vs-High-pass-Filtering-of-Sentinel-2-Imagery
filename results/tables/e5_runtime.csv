@@ -1,0 +1,26 @@
+image_shape,domain,method,parameter,kernel_side,seconds
+2261x2491,spatial,box mean,n=3,3,0.09524
+2261x2491,spatial,box mean,n=5,5,0.240956
+2261x2491,spatial,box mean,n=7,7,0.456186
+2261x2491,spatial,box mean,n=9,9,0.764428
+2261x2491,spatial,box mean,n=15,15,2.10523
+2261x2491,spatial,box mean,n=21,21,4.08583
+2261x2491,spatial,box mean,n=31,31,8.88486
+2261x2491,spatial,median,n=3,3,1.42119
+2261x2491,spatial,median,n=5,5,4.43455
+2261x2491,spatial,gaussian,sigma=1,7,0.455966
+2261x2491,frequency,gaussian,sigma=1 (D0=0.318),,1.37411
+2261x2491,spatial,gaussian,sigma=2,13,1.5126
+2261x2491,frequency,gaussian,sigma=2 (D0=0.159),,1.37501
+2261x2491,spatial,gaussian,sigma=3,19,3.27814
+2261x2491,frequency,gaussian,sigma=3 (D0=0.106),,1.37497
+2261x2491,spatial,gaussian,sigma=5,31,7.8393
+2261x2491,frequency,gaussian,sigma=5 (D0=0.064),,1.43008
+2261x2491,spatial,gaussian,sigma=8,49,20.9631
+2261x2491,frequency,gaussian,sigma=8 (D0=0.040),,1.42846
+2261x2491,frequency,ideal,D0=0.1,,1.35552
+2261x2491,frequency,ideal,D0=0.2,,1.36453
+2261x2491,frequency,ideal,D0=0.3,,1.35651
+2261x2491,frequency,butterworth,D0=0.1,,1.47254
+2261x2491,frequency,butterworth,D0=0.2,,1.47879
+2261x2491,frequency,butterworth,D0=0.3,,1.48395

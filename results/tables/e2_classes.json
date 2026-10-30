@@ -1,0 +1,20 @@
+{
+  "classes": [
+    "Trees",
+    "Shrub/Grass",
+    "Cropland",
+    "Built-up",
+    "Bare/Mining"
+  ],
+  "dropped_classes_fraction": {
+    "Water": 0.001854353691866571
+  },
+  "class_fraction": {
+    "Trees": 0.19921767012283584,
+    "Shrub/Grass": 0.28663649110260003,
+    "Cropland": 0.24641651120504404,
+    "Built-up": 0.25346745852517094,
+    "Bare/Mining": 0.01240751535248256
+  },
+  "train_pixels_fraction": 0.6975762901243238
+}

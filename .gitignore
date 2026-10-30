@@ -1,0 +1,62 @@
+# secrets (copy .env.example to .env and fill in your own values)
+.env
+.env.*
+!.env.example
+
+# private working notes and assistant instructions (not part of the project)
+CLAUDE.md
+START_HERE.md
+.claude/
+
+# course templates as received (their contents are already in report/latex and presentation/beamer)
+*.zip
+
+# editor and operating-system files
+.vscode/
+.idea/
+*.swp
+*~
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# environment and caches
+.venv/
+__pycache__/
+*.pyc
+*.egg-info/
+.pytest_cache/
+
+# large data (re-create with: python -m rsfilter fetch)
+data/raw/
+data/processed/
+
+# build output (re-create with: python scripts/build_exe.py)
+build/
+dist/*
+*.spec
+
+# demo outputs (re-create with: python -m rsfilter demo)
+results/demo/
+
+# LaTeX build files (re-create with: python scripts/build_latex.py)
+*.aux
+*.log
+*.out
+*.toc
+*.lof
+*.lot
+*.bbl
+*.blg
+*.fls
+*.fdb_latexmk
+*.nav
+*.snm
+*.vrb
+# generated LaTeX: the *_template.tex files are the sources, the PDFs are copied to report/, presentation/, docs/
+report/latex/report.tex
+report/latex/flowchart.tex
+report/latex/*.pdf
+presentation/beamer/slides.tex
+presentation/beamer/slides_notes.tex
+presentation/beamer/*.pdf

@@ -4,6 +4,8 @@ The prose lives in two templates:
     report/latex/report_template.tex        -> report/Group1_EES403_Report.pdf
     presentation/beamer/slides_template.tex -> presentation/Group1_EES403_Slides.pdf
                                                presentation/Group1_EES403_Slides_notes.pdf
+    presentation/beamer/slides_shorter_template.tex -> presentation/Group1_EES403_Slides_shorter.pdf
+                                               presentation/Group1_EES403_Slides_shorter_notes.pdf
 Placeholders are written <<key>> (value as text) or <<p:key>> (a filter code such as
 gauss_s1 printed as a readable name). Every value comes from values() or from the CSV
 tables read here, so no result is typed by hand. The script also redraws the
@@ -369,13 +371,16 @@ def main():
     shutil.copy(latexmk(REPORT_DIR, "report"), ROOT / "report" / "Group1_EES403_Report.pdf")
     print("wrote report/Group1_EES403_Report.pdf")
 
-    slides = fill(SLIDES_DIR / "slides_template.tex", v, raw)
-    for name, notes in [("slides", r"\setbeameroption{hide notes}"),
-                        ("slides_notes", r"\setbeameroption{show notes on second screen=bottom}")]:
-        (SLIDES_DIR / f"{name}.tex").write_text(slides.replace("%NOTES-OPTION%", notes), encoding="utf-8")
-        out = ROOT / "presentation" / ("Group1_EES403_Slides" + ("_notes" if "notes" in name else "") + ".pdf")
-        shutil.copy(latexmk(SLIDES_DIR, name), out)
-        print("wrote", out.relative_to(ROOT))
+    # full deck (15 min) and shorter deck (9 content slides, 10 min), each with and without speaker notes
+    for stem, suffix in [("slides", ""), ("slides_shorter", "_shorter")]:
+        slides = fill(SLIDES_DIR / f"{stem}_template.tex", v, raw)
+        for notes_suffix, notes in [("", r"\setbeameroption{hide notes}"),
+                                    ("_notes", r"\setbeameroption{show notes on second screen=bottom}")]:
+            name = stem + notes_suffix
+            (SLIDES_DIR / f"{name}.tex").write_text(slides.replace("%NOTES-OPTION%", notes), encoding="utf-8")
+            out = ROOT / "presentation" / f"Group1_EES403_Slides{suffix}{notes_suffix}.pdf"
+            shutil.copy(latexmk(SLIDES_DIR, name), out)
+            print("wrote", out.relative_to(ROOT))
 
     readme = ROOT / "README.md"
     text = readme.read_text(encoding="utf-8")

@@ -59,4 +59,6 @@ report/latex/flowchart.tex
 report/latex/*.pdf
 presentation/beamer/slides.tex
 presentation/beamer/slides_notes.tex
+presentation/beamer/slides_shorter.tex
+presentation/beamer/slides_shorter_notes.tex
 presentation/beamer/*.pdf

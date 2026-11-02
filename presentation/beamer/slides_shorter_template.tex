@@ -4,8 +4,8 @@
 %
 % Nine content slides for a talk of about 10 minutes (timed at about 145 words per minute). Title, section dividers, the closing
 % "Questions" frame and the references are transitions and are not counted.
-% Speakers: Robin (Introduction; Conclusions), Sangam (Data), Pranay (Methods, all of the
-% mathematics), Aparna (Results I), Sangeeta (Results II). Only Pranay's notes use equations.
+% Speakers: Sangeeta (Introduction; Conclusions), Sangam (Data), Pranay (Methods, all of the
+% mathematics), Aparna (Results I), Robin (Results II). Only Pranay's notes use equations.
 % Every note starts with [speaker | time on this slide | clock at the end of the slide].
 \documentclass[aspectratio=169, 11pt]{beamer}
 \usetheme{Boadilla}
@@ -64,11 +64,11 @@
 \begin{frame}[plain]
 \titlepage
 \end{frame}
-\note{[Robin | 0:15 | 0:15]\\
+\note{[Sangeeta | 0:15 | 0:15]\\
 Good morning. We are Group 1. We compared low-pass and high-pass filtering on a Sentinel-2 image of the Aravalli ridge, to find out which kind of filter suits which remote sensing job.}
 
-% ================================================================== Introduction (Robin)
-\speaker{Robin}
+% ================================================================== Introduction (Sangeeta)
+\speaker{Sangeeta}
 \section{Introduction}
 
 % ------------------------------------------------------------------ content slide 1
@@ -91,7 +91,7 @@ Good morning. We are Group 1. We compared low-pass and high-pass filtering on a 
 \source{NIR reflectance along a 1.6 km line on the ridge: original (black), low-pass (blue), high-boost (pink).}
 \end{columns}
 \end{frame}
-\note{[Robin | 0:45 | 1:00]\\
+\note{[Sangeeta | 0:45 | 1:00]\\
 A satellite image is a grid of brightness values. Over a field or a lake the values change slowly; across a road or a ridge crest they jump within a few pixels. A low-pass filter keeps the slow changes and gives a smoother image. A high-pass filter keeps the fast changes, so edges stand out. The plot is real data along one line on the ridge: the black line is the original, the blue lines are flatter after smoothing, and the pink lines are steeper after sharpening. The two filters do opposite jobs, so we did not look for one winner. We tested them on five jobs and picked the best filter for each.}
 
 % ================================================================== Data (Sangam)
@@ -243,10 +243,10 @@ noisy <<e1_g_noisy>> dB $\rightarrow$ <<p:e1_g_best>> \textbf{<<e1_g_best_psnr>>
 \takeaway{\small Use smooth masks, not the ideal one. Use the median for spikes, and only light smoothing for random noise.}
 \end{frame}
 \note{[Aparna | 1:00 | 7:35]\\
-On the left we passed a clean step, a jump from dark to bright, through the three frequency masks. The ideal mask produces ripples on both sides and overshoots by <<ring_ideal>> percent of the step, which matches what Pranay predicted. Butterworth overshoots by <<ring_butter>> percent and Gaussian by <<ring_gauss>>. So the ideal mask should be avoided. On the right is the noise test, where higher PSNR means closer to the clean image. With salt-and-pepper noise, which is scattered single bad pixels, the 3 by 3 median raised the score from <<e1_sp_noisy>> to <<e1_sp_best_psnr>>, far ahead of any averaging filter, because averaging spreads each bad pixel over its neighbours while the median simply throws it away. With random noise, only the lightest filters helped; <<e1_g_n_worse>> of the <<e1_g_n_lpf>> smoothing filters made the image worse, because they removed more real detail than noise. Sangeeta will present the other experiments.}
+On the left we passed a clean step, a jump from dark to bright, through the three frequency masks. The ideal mask produces ripples on both sides and overshoots by <<ring_ideal>> percent of the step, which matches what Pranay predicted. Butterworth overshoots by <<ring_butter>> percent and Gaussian by <<ring_gauss>>. So the ideal mask should be avoided. On the right is the noise test, where higher PSNR means closer to the clean image. With salt-and-pepper noise, which is scattered single bad pixels, the 3 by 3 median raised the score from <<e1_sp_noisy>> to <<e1_sp_best_psnr>>, far ahead of any averaging filter, because averaging spreads each bad pixel over its neighbours while the median simply throws it away. With random noise, only the lightest filters helped; <<e1_g_n_worse>> of the <<e1_g_n_lpf>> smoothing filters made the image worse, because they removed more real detail than noise. Robin will present the other experiments.}
 
-% ================================================================== Results II (Sangeeta)
-\speaker{Sangeeta}
+% ================================================================== Results II (Robin)
+\speaker{Robin}
 \section{Results II: Classification, Edges and Cost}
 
 % ------------------------------------------------------------------ content slide 8
@@ -268,11 +268,11 @@ Best high-boost & <<e2_hb_best_kappa>> & & Mean $5\times5$ & <<e3_box5_f1>> & \\
 
 \source{Cost: light filters change the spectral angle by <<e4_hb05_sam>>--<<e4_g1_sam>>$^\circ$; a full band takes <<e5_box3>> s with a $3\times3$ kernel and <<e5_fft_min>>--<<e5_fft_max>> s with any FFT mask.}
 \end{frame}
-\note{[Sangeeta | 1:20 | 8:55]\\
-Here a computer classified every pixel into land-cover classes after each filter. From the left: the WorldCover reference, the map from the raw image, from the best smoothed image, and from the best sharpened image. The smoothed map is much cleaner. Its kappa score, which measures agreement with the reference, rose from <<e2_raw_kappa>> to <<e2_best_kappa>>, and the share of isolated speckle pixels fell from <<e2_raw_sp>> to <<e2_best_sp>>. Sharpened images classified worse, because sharpening makes pixels of the same class look more different from each other. For edges the result is reversed: edges found on the sharpened image matched the mapped boundaries best, <<e3_hb_best_f1>> against <<e3_orig_f1>> with no filter, while smoothing removed edges and lowered the score. Along the ridge, the Sobel and Prewitt edge filters gave a small gain. The last line is about cost. Light filters hardly change the colours of the image, a spectral angle of only <<e4_hb05_sam>> to <<e4_g1_sam>> degrees. A 3 by 3 filter takes <<e5_box3>> seconds on a full band, and a frequency-domain filter <<e5_fft_min>> to <<e5_fft_max>> seconds whatever its setting, so for the small filters that worked best, the ordinary spatial method is faster. Robin will bring it together.}
+\note{[Robin | 1:20 | 8:55]\\
+Here a computer classified every pixel into land-cover classes after each filter. From the left: the WorldCover reference, the map from the raw image, from the best smoothed image, and from the best sharpened image. The smoothed map is much cleaner. Its kappa score, which measures agreement with the reference, rose from <<e2_raw_kappa>> to <<e2_best_kappa>>, and the share of isolated speckle pixels fell from <<e2_raw_sp>> to <<e2_best_sp>>. Sharpened images classified worse, because sharpening makes pixels of the same class look more different from each other. For edges the result is reversed: edges found on the sharpened image matched the mapped boundaries best, <<e3_hb_best_f1>> against <<e3_orig_f1>> with no filter, while smoothing removed edges and lowered the score. Along the ridge, the Sobel and Prewitt edge filters gave a small gain. The last line is about cost. Light filters hardly change the colours of the image, a spectral angle of only <<e4_hb05_sam>> to <<e4_g1_sam>> degrees. A 3 by 3 filter takes <<e5_box3>> seconds on a full band, and a frequency-domain filter <<e5_fft_min>> to <<e5_fft_max>> seconds whatever its setting, so for the small filters that worked best, the ordinary spatial method is faster. Sangeeta will bring it together.}
 
-% ================================================================== Conclusions (Robin)
-\speaker{Robin}
+% ================================================================== Conclusions (Sangeeta)
+\speaker{Sangeeta}
 \section{Conclusions}
 
 % ------------------------------------------------------------------ content slide 9
@@ -301,7 +301,7 @@ Application & Best filter & Evidence (best vs.\ no filter) \\
 \vspace{2pt}
 {\tiny\color{gray} Avoid the ideal mask (ringing) and heavy smoothing. Limits: one scene, one area; WorldCover is a model output; gains of about 0.01 are not a ranking.\par}
 \end{frame}
-\note{[Robin | 1:00 | 9:55]\\
+\note{[Sangeeta | 1:00 | 9:55]\\
 This table is produced by our code from the experiment results, one best filter per application. The pattern is clear. When the pixel values feed a calculation, such as removing noise or classifying land cover, light smoothing wins: a small Gaussian, or the 3 by 3 median for scattered bad pixels. When the job is about where things change, such as boundaries, ridge lines or looking at the image, sharpening wins: high-boost at a moderate strength, or an edge layer kept beside the original bands. Some gains are large, like the median on noise and smoothing for classification. Others are small, like urban boundaries and the ridge, and we report them as small. Our limits: one winter scene, one area, and a reference map that is itself a model output. So there is no single most suitable filter; the right one depends on the application.}
 
 % ------------------------------------------------------------------ closing (transition)
@@ -312,7 +312,7 @@ This table is produced by our code from the experiment results, one best filter 
 \footnotesize Live demo: \texttt{python -m rsfilter demo} (offline, 512 $\times$ 512 sample)
 \vfill
 \end{frame}
-\note{[Robin | 0:10 | 10:05]\\
+\note{[Sangeeta | 0:10 | 10:05]\\
 Thank you. We are happy to take questions, and we can run the offline demo if you would like to see it.}
 
 % ------------------------------------------------------------------ references (backup)

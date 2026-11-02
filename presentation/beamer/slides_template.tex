@@ -3,8 +3,8 @@
 % from this file and fills every double-angle placeholder from results/tables.
 %
 % Structure follows the report chapter by chapter. Talk length 15 minutes.
-% Speakers: Robin (Introduction; Discussion and Conclusions), Sangam (Study Area and Data),
-% Pranay (Methods, all of the mathematics), Aparna (Results I), Sangeeta (Results II).
+% Speakers: Sangeeta (Introduction; Discussion and Conclusions), Sangam (Study Area and Data),
+% Pranay (Methods, all of the mathematics), Aparna (Results I), Robin (Results II).
 % Every note starts with [speaker | time on this slide | clock at the end of the slide].
 \documentclass[aspectratio=169, 11pt]{beamer}
 \usetheme{Boadilla}
@@ -71,12 +71,12 @@
 
 \begin{document}
 
-% ================================================================== opening (Robin)
+% ================================================================== opening (Sangeeta)
 \begin{frame}[plain]
 \titlepage
 \end{frame}
-\note{[Robin | 0:15 | 0:15]\\
-Good morning. We are Group 1, and our project compares low-pass and high-pass filtering on Sentinel-2 imagery over the Aravalli ridge between Gurugram and Faridabad. The course brief asked us to implement both kinds of filter and decide which is most suitable for remote sensing. I will introduce the problem, Sangam will describe the data, Pranay will explain the methods, Aparna and Sangeeta will present the results, and I will close with the recommendation.}
+\note{[Sangeeta | 0:15 | 0:15]\\
+Good morning. We are Group 1, and our project compares low-pass and high-pass filtering on Sentinel-2 imagery over the Aravalli ridge between Gurugram and Faridabad. The course brief asked us to implement both kinds of filter and decide which is most suitable for remote sensing. I will introduce the problem, Sangam will describe the data, Pranay will explain the methods, Aparna and Robin will present the results, and I will close with the recommendation.}
 
 \begin{frame}{Contents}
 \begin{columns}[T]
@@ -94,17 +94,17 @@ Good morning. We are Group 1, and our project compares low-pass and high-pass fi
 \begin{block}{Presenter}
 \small
 \begin{tabular}{@{}l@{}}
-Robin\\ Sangam\\ Pranay\\ Aparna\\ Sangeeta\\ Robin
+Sangeeta\\ Sangam\\ Pranay\\ Aparna\\ Robin\\ Sangeeta
 \end{tabular}
 \end{block}
 \end{columns}
 \takeaway{\small The talk follows the report: Chapters 1 to 6, one section each.}
 \end{frame}
-\note{[Robin | 0:15 | 0:30]\\
+\note{[Sangeeta | 0:15 | 0:30]\\
 The talk follows the chapters of our report. First the idea of spatial frequency and our aim, then the study area and data, then the methods, then the results in two parts, and finally the decision matrix and our recommendation.}
 
-% ================================================================== 1 Introduction (Robin)
-\speaker{Robin}
+% ================================================================== 1 Introduction (Sangeeta)
+\speaker{Sangeeta}
 \section{Introduction}
 
 \begin{frame}{Spatial frequency is how often brightness changes per unit distance}
@@ -140,7 +140,7 @@ A filter keeps one part and suppresses the other.
 \end{tikzpicture}
 \end{columns}
 \end{frame}
-\note{[Robin | 0:30 | 1:00]\\
+\note{[Sangeeta | 0:30 | 1:00]\\
 A satellite image is a grid of numbers. Spatial frequency is the number of changes in brightness per unit distance. Over a field or a lake the values change slowly; that is low frequency. Across a street grid or a ridge crest they jump every few pixels; that is high frequency. Any image can be thought of as a broad pattern plus a layer of edges and texture, and a filter lets us keep one and suppress the other.}
 
 \begin{frame}{Low-pass flattens edges; high-pass and high-boost sharpen them}
@@ -160,7 +160,7 @@ A satellite image is a grid of numbers. Spatial frequency is the number of chang
 \end{columns}
 \takeaway{\small Both can be computed in the \emph{spatial} domain (kernels) or the \emph{frequency} domain (FFT masks).}
 \end{frame}
-\note{[Robin | 0:35 | 1:35]\\
+\note{[Sangeeta | 0:35 | 1:35]\\
 A low-pass filter replaces each pixel by an average of its neighbours, so the image becomes smoother. A high-pass filter keeps only the abrupt changes; the classic remote sensing form is the original minus a smoothed copy. Adding a fraction of that edge layer back gives a high-boost image. The plot is real data along one line on the ridge. The black line is the original. The blue low-pass curves are flatter, and the pink high-boost curves are steeper and overshoot at every edge. Both families can be computed in two ways, which Pranay will explain.}
 
 \begin{frame}{Aim: decide which filter is most suitable, application by application}
@@ -182,7 +182,7 @@ E5 & Is the spatial or the frequency route faster? \\
 
 \takeaway{\small The answers are combined in a \textbf{decision matrix}: one best filter per application.}
 \end{frame}
-\note{[Robin | 0:25 | 2:00]\\
+\note{[Sangeeta | 0:25 | 2:00]\\
 Since smoothing and sharpening are meant for different jobs, asking for one best filter would not make sense. So we split the question into five, each answered by one experiment: noise removal, classification, edges, change to the spectra, and speed. At the end the five answers are combined in a decision matrix. Sangam will now describe the area and the data.}
 
 % ================================================================== 2 Study area and data (Sangam)
@@ -510,10 +510,10 @@ Filter & PSNR (dB) & SSIM & PSNR (dB) & SSIM \\
 \takeaway{\small Median $3\times3$ for impulse noise; Gaussian $\sigma=1$ or mean $3\times3$ for random noise.}
 \end{frame}
 \note{[Aparna | 0:35 | 11:00]\\
-For E1 we added noise to a clean crop and measured how close each filtered result came to the clean image; higher PSNR is better. With random noise the noisy image scored <<e1_g_noisy>> decibels, and only the lightest filters improved on it; <<e1_g_n_worse>> of the <<e1_g_n_lpf>> low-pass filters made it worse, because they removed more real detail than noise. With salt-and-pepper noise the 3 by 3 median was far ahead: a mean spreads each spike over its neighbours, while the median throws it away. Sangeeta will present the remaining experiments.}
+For E1 we added noise to a clean crop and measured how close each filtered result came to the clean image; higher PSNR is better. With random noise the noisy image scored <<e1_g_noisy>> decibels, and only the lightest filters improved on it; <<e1_g_n_worse>> of the <<e1_g_n_lpf>> low-pass filters made it worse, because they removed more real detail than noise. With salt-and-pepper noise the 3 by 3 median was far ahead: a mean spreads each spike over its neighbours, while the median throws it away. Robin will present the remaining experiments.}
 
-% ================================================================== 5 Results II (Sangeeta)
-\speaker{Sangeeta}
+% ================================================================== 5 Results II (Robin)
+\speaker{Robin}
 \section{Results II: Classification, Edges and Cost}
 
 \begin{frame}{E2: low-pass inputs classify best, high-boost inputs worst}
@@ -529,7 +529,7 @@ Input & Family & Accuracy & $\kappa$ & Macro-F1 & Salt-and-pepper \\
 \source{Held-out blocks. Best and worst of each family; bold = best (lowest for salt-and-pepper).}
 \takeaway{\small Smoothing removes within-class variation (roof types, shadows, mixed pixels) before classification.}
 \end{frame}
-\note{[Sangeeta | 0:35 | 11:35]\\
+\note{[Robin | 0:35 | 11:35]\\
 In E2 a Random Forest classified the area after each filter. On the raw bands kappa was <<e2_raw_kappa>>. Every low-pass input did better; the best reached <<e2_best_kappa>>, and the spatial Gaussian was almost tied with it, which is expected because, as Pranay showed, the two are nearly the same filter. High-boost inputs did worse, at best <<e2_hb_best_kappa>>. The reason is that at 10 metres one class contains many different surfaces, like roofs and shadows. Smoothing averages that variation out; sharpening makes it larger. Adding high-pass layers next to the raw bands helped a little, kappa <<e2_stack_best_kappa>>, but less than smoothing.}
 
 \begin{frame}{E2: smoothing also halves the speckle in the classified map}
@@ -537,7 +537,7 @@ In E2 a Random Forest classified the area after each filter. On the raw bands ka
 \includegraphics[width=\textwidth]{fig07_classification_maps.png}
 \takeaway{\small Salt-and-pepper index: raw <<e2_raw_sp>> $\rightarrow$ best low-pass <<e2_best_sp>>.}
 \end{frame}
-\note{[Sangeeta | 0:20 | 11:55]\\
+\note{[Robin | 0:20 | 11:55]\\
 Here are the maps. From the left: the WorldCover reference, the map from the raw bands, from the best low-pass input, and from the best high-boost input. The raw and high-boost maps are speckled; the low-pass map is much cleaner. The share of pixels that disagree with their neighbours fell from <<e2_raw_sp>> to <<e2_best_sp>>.}
 
 \begin{frame}{E3: high-pass helps boundaries and ridge lineaments}
@@ -574,7 +574,7 @@ Gaussian $\sigma=3$ & <<e3_coh_g3>>$^{\ast}$ \\
 \end{columns}
 \takeaway{\small Smoothing removes edges; high-pass filtering helps wherever the task is \emph{where things change}.}
 \end{frame}
-\note{[Sangeeta | 0:40 | 12:35]\\
+\note{[Robin | 0:40 | 12:35]\\
 E3 asks which filter makes edges easiest to find. Edges detected on the original matched the WorldCover boundaries with an F1 of <<e3_orig_f1>>. High-boost raised this to <<e3_hb_best_f1>>, and smoothing lowered it, because fewer edges survive. For built-up boundaries alone the gain was negligible, and we report it as such. On the ridge, the gradient operators Prewitt and Sobel raised coherence slightly above the original. The Laplacian scored lowest because it picks up speckle. Strong smoothing scores higher still, but only because it erases the speckle along with the fine detail, so we do not count it as better lineament mapping.}
 
 \begin{frame}{E4: light filters keep the spectra; HPF layers are not reflectance}
@@ -594,7 +594,7 @@ HPF $7\times7$ & <<e4_hpf7_sam>> & -- \\
 \source{Mean spectral angle to the original image; 0$^\circ$ = spectrum shape unchanged.}
 \takeaway{\small Keep high-pass products as \emph{extra layers} beside the bands, never in place of them.}
 \end{frame}
-\note{[Sangeeta | 0:25 | 13:00]\\
+\note{[Robin | 0:25 | 13:00]\\
 E4 measures what filtering costs. Light low-pass filters and mild high-boost change the spectrum by only one or two degrees. A pure high-pass layer is a different thing: its mean is near zero and its spectral angle to the original is close to 90 degrees, so it is not reflectance any more and an NDVI from it has no meaning. That is why high-pass products should be stored beside the bands, not instead of them.}
 
 \begin{frame}{E5: FFT cost is flat, convolution cost grows with kernel size}
@@ -614,11 +614,11 @@ Break-even near a <<e5_cross>>-px kernel
 \end{columns}
 \takeaway{\small Small kernels: convolve. Large kernels or many cutoffs: use the FFT.}
 \end{frame}
-\note{[Sangeeta | 0:25 | 13:25]\\
-Finally speed, on one full band. A 3 by 3 spatial filter took <<e5_box3>> seconds, but the time grows quickly with the kernel, up to <<e5_g8>> seconds for the largest. Every frequency-domain filter took about the same time, between <<e5_fft_min>> and <<e5_fft_max>> seconds, whatever the mask. The two lines cross near a kernel of <<e5_cross>> pixels. Since the filters that worked best are small, convolution is usually the practical choice. Robin will bring the results together.}
+\note{[Robin | 0:25 | 13:25]\\
+Finally speed, on one full band. A 3 by 3 spatial filter took <<e5_box3>> seconds, but the time grows quickly with the kernel, up to <<e5_g8>> seconds for the largest. Every frequency-domain filter took about the same time, between <<e5_fft_min>> and <<e5_fft_max>> seconds, whatever the mask. The two lines cross near a kernel of <<e5_cross>> pixels. Since the filters that worked best are small, convolution is usually the practical choice. Sangeeta will bring the results together.}
 
-% ================================================================== 6 Discussion and conclusions (Robin)
-\speaker{Robin}
+% ================================================================== 6 Discussion and conclusions (Sangeeta)
+\speaker{Sangeeta}
 \section{Discussion and Conclusions}
 
 \begin{frame}{Decision matrix: one best filter per application}
@@ -634,7 +634,7 @@ Application & Best filter & Evidence (best vs.\ no filter) \\
 \source{Generated by the analysis code from the experiment tables (\texttt{decision\_matrix.csv}).}
 \takeaway{\small \textcolor{lpcol}{\textbf{Low-pass}} when pixel values feed a calculation;\quad \textcolor{hpcol}{\textbf{high-pass}} when edges and structure are the point.}
 \end{frame}
-\note{[Robin | 0:35 | 14:00]\\
+\note{[Sangeeta | 0:35 | 14:00]\\
 This table answers our five questions. It is produced by the code from the experiment results, with one measure per application. Some gains are large, like the median on impulse noise or the Gaussian for classification. Some are small, like urban boundaries and ridge coherence, and we present them as small. The pattern is consistent: low-pass filtering wins where pixel values feed a calculation, and high-pass filtering wins where the task is about where things change.}
 
 \begin{frame}{Recommendation}
@@ -659,7 +659,7 @@ $\Rightarrow$ \textbf{Sobel / Prewitt} layer for lineaments
 \small the ideal frequency mask (ringing), and heavy smoothing (detail is lost before noise)
 \end{alertblock}
 \end{frame}
-\note{[Robin | 0:30 | 14:30]\\
+\note{[Sangeeta | 0:30 | 14:30]\\
 So our recommendation is split by purpose. For quantitative work, use light low-pass filtering: a small Gaussian, or a 3 by 3 median when there are dropped or saturated pixels. For interpretation and structural mapping, keep the original bands and add a high-pass product beside them: high-boost with moderate k for display, and a Sobel or Prewitt layer for lineaments. Avoid the ideal mask and avoid heavy smoothing.}
 
 \begin{frame}{Limitations and conclusions}
@@ -691,7 +691,7 @@ So our recommendation is split by purpose. For quantitative work, use light low-
 \large\textbf{Thank you. Questions?}\\[2pt]
 \footnotesize Live demo: \texttt{python -m rsfilter demo} (offline, 512 $\times$ 512 sample)
 \end{frame}
-\note{[Robin | 0:30 | 15:00]\\
+\note{[Sangeeta | 0:30 | 15:00]\\
 Our results have limits. WorldCover is itself a model output; we used one winter scene and one area; and kappa differences of about 0.01 between the leading filters should not be read as a ranking. To conclude: there is no single most suitable filter, because the two families do opposite jobs. Smoothing gave the most accurate and cleanest land-cover map, and sharpening gave the best boundary match and the sharpest image. Thank you. We are happy to take questions, and we can run the offline demo if you would like to see it.}
 
 % ------------------------------------------------------------------ references

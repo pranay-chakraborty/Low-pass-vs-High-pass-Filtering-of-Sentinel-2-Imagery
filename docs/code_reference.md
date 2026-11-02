@@ -80,7 +80,7 @@ Frequency-domain filters using the 2-D discrete Fourier transform.
 - **`make_mask(kind: 'str', shape: 'tuple[int, int]', d0: 'float', highpass: 'bool' = False, order: 'int' = 2) -> 'np.ndarray'`** Return the LPF mask, or ``1 - LPF`` when ``highpass`` is True.
 - **`apply_mask(img: 'np.ndarray', mask: 'np.ndarray') -> 'np.ndarray'`** Multiply the centred spectrum of a 2-D array by ``mask`` and transform back (no padding).
 - **`freq_filter(img: 'np.ndarray', kind: 'str', d0: 'float', highpass: 'bool' = False, order: 'int' = 2, pad: 'int' = 64) -> 'np.ndarray'`** Filter an image (or each band of a stack) in the frequency domain.
-- **`square_mask(shape: 'tuple[int, int]', side: 'int') -> 'np.ndarray'`** Square ideal low-pass mask: ones in a centred ``side`` x ``side`` block (as on the course slide).
+- **`square_mask(shape: 'tuple[int, int]', side: 'int') -> 'np.ndarray'`** Square ideal low-pass mask: ones in a centred ``side`` x ``side`` block (as on the assignment slide).
 - **`square_lowpass(img: 'np.ndarray', side: 'int') -> 'np.ndarray'`** Slide replication: keep a ``side`` x ``side`` block of the centred spectrum of a 2-D image.
 - **`log_spectrum(img: 'np.ndarray') -> 'np.ndarray'`** Centred log-magnitude spectrum ``log(1 + |F(u, v)|)`` for display.
 - **`step_response(kind: 'str', d0: 'float', order: 'int', pad: 'int', lo: 'float' = 0.1, hi: 'float' = 0.3) -> 'np.ndarray'`** Filter a synthetic vertical step edge (lo -> hi) and return the middle row.
@@ -154,7 +154,7 @@ Figures for the report and slides. Each function saves one PNG at 200 dpi and re
 - **`fig_boost_grid(cfg, img, out)`** High-boost (original + k x HPF) results with the three zoomed insets.
 - **`fig_slide_grid(cfg, img, names, out, mode, regions=('ridge', 'urban'))`** Landscape grid for slides: rows = sub-areas, columns = filters (same display rules as figure 2).
 - **`fig_spectra(band: 'np.ndarray', cfg, out: 'Path') -> 'Path'`** Log-magnitude spectra of the NIR crop before and after low- and high-pass filtering.
-- **`fig_square_masks(band: 'np.ndarray', cfg, out: 'Path') -> 'Path'`** Square ideal low-pass masks of 61, 91, 121 pixels on the 512 x 512 crop (course slide layout).
+- **`fig_square_masks(band: 'np.ndarray', cfg, out: 'Path') -> 'Path'`** Square ideal low-pass masks of 61, 91, 121 pixels on the 512 x 512 crop (slide layout).
 - **`fig_ringing(cfg, img, out: 'Path') -> 'Path'`** Ideal vs Butterworth vs Gaussian LPF (D0 = 0.1): real zoom (top) and synthetic step response (bottom).
 - **`fig_line_profile(cfg, img, out: 'Path') -> 'Path'`** NIR line profile across a sharp edge: original vs low-pass vs high-boost.
 - **`fig_class_maps(cfg, out: 'Path') -> 'Path'`** WorldCover (regrouped) next to the raw, best-LPF and best-HPF Random Forest maps.

@@ -26,7 +26,6 @@
 \usepackage[most]{tcolorbox}
 \usepackage[round]{natbib}
 \usepackage[hidelinks]{hyperref}
-\usepackage{bookmark}
 
 \hypersetup{pdftitle={Low-pass and High-pass Filtering of Sentinel-2 Imagery},
             pdfauthor={Group 1: Pranay Chakraborty, Sangeeta Kumari, Aparna Manoj, Robin, Sangam}, pdfsubject={EES403 Advanced Remote Sensing and GIS}}
@@ -93,7 +92,7 @@
 
     \vspace{0.8cm}
     \large
-    \textit{A course project report submitted for\\
+    \textit{A project report submitted for\\
     EES403: Advanced Remote Sensing and GIS}
 
     \vspace{0.5cm}
@@ -182,7 +181,7 @@ Figure~\ref{fig:profile} shows both effects on real data. Along one line across 
     \label{fig:profile}
 \end{figure}
 
-Both kinds of filter can be computed in two ways. In the \emph{spatial domain} a small grid of weights (a kernel) slides over the image. In the \emph{frequency domain} the image is transformed with the fast Fourier transform (FFT), the unwanted frequencies are multiplied by zero with a mask, and the result is transformed back \citep{gonzalez2018}. Both routes appear in the course material, so we implemented both.
+Both kinds of filter can be computed in two ways. In the \emph{spatial domain} a small grid of weights (a kernel) slides over the image. In the \emph{frequency domain} the image is transformed with the fast Fourier transform (FFT), the unwanted frequencies are multiplied by zero with a mask, and the result is transformed back \citep{gonzalez2018}. Both routes appear in the project brief, so we implemented both.
 
 \section{Aim}
 
@@ -319,7 +318,7 @@ Let $D$ be the distance from the centre of the spectrum, scaled so that $D=1$ at
     \text{Butterworth (order 2):}\quad & H = 1 / \big(1 + (D/D_0)^{4}\big)\\
     \text{Gaussian:}\quad & H = \exp\!\big(-D^2/2D_0^2\big)
 \end{align}
-with $D_0 = 0.1$, 0.2 and 0.3. Each high-pass mask is $1-H$. A Gaussian mask with cutoff $D_0$ is the same filter as a spatial Gaussian with $\sigma = 1/(\pi D_0)$ pixels, which gave us a direct check between the two domains. To reproduce the example in the course slides, we also applied square ideal low-pass masks of 61, 91 and 121 pixels to the 512 $\times$ 512 crop.
+with $D_0 = 0.1$, 0.2 and 0.3. Each high-pass mask is $1-H$. A Gaussian mask with cutoff $D_0$ is the same filter as a spatial Gaussian with $\sigma = 1/(\pi D_0)$ pixels, which gave us a direct check between the two domains. We also applied square ideal low-pass masks of 61, 91 and 121 pixels to the 512 $\times$ 512 crop.
 
 \begin{table}[htbp]
 \centering
@@ -403,12 +402,12 @@ High-pass outputs (Figure~\ref{fig:hpf}) are edge maps: flat ground turns mid-gr
 
 \section{Frequency domain and ringing}
 
-Figure~\ref{fig:square} reproduces the course slide. The smaller the square mask, the fewer frequencies pass and the blurrier the result; all three results show a ripple texture.
+The smaller the square mask, the fewer frequencies pass and the blurrier the result; all three results show a ripple texture.
 
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=\textwidth]{fig04_slide_square_masks.png}
-    \caption[Square ideal masks of 61, 91 and 121 pixels]{Reproduction of the course slide: square ideal low-pass masks of 61, 91 and 121 pixels (top) and the filtered NIR crop (bottom).}
+    \caption[Square ideal masks of 61, 91 and 121 pixels]{Reproduction of the slide example: square ideal low-pass masks of 61, 91 and 121 pixels (top) and the filtered NIR crop (bottom).}
     \label{fig:square}
 \end{figure}
 

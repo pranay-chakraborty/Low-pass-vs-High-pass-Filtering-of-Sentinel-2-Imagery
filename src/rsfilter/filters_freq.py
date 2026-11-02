@@ -93,7 +93,7 @@ def freq_filter(img: np.ndarray, kind: str, d0: float, highpass: bool = False,
 
 
 def square_mask(shape: tuple[int, int], side: int) -> np.ndarray:
-    """Square ideal low-pass mask: ones in a centred ``side`` x ``side`` block (as on the course slide)."""
+    """Square ideal low-pass mask: ones in a centred ``side`` x ``side`` block (as on the assignment slide)."""
     m = np.zeros(shape)
     cy, cx = shape[0] // 2, shape[1] // 2
     h = side // 2

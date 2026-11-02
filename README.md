@@ -173,7 +173,7 @@ Full detail with every formula: [`docs/algorithm.md`](docs/algorithm.md). Pseudo
 | Median 3, 5 (non-linear) | Sobel and Prewitt gradient magnitude |
 | | High-boost: original + k HPF, k = 0.5, 1.0, 1.5 |
 
-**Frequency domain.** Mirror pad, FFT, centre, multiply by a mask H(u, v), invert, crop. Cutoff D0 = 0.1, 0.2, 0.3 of the Nyquist frequency for ideal, Butterworth (n = 2) and Gaussian masks; HPF = 1 - LPF. The course slide is reproduced with square ideal masks of 61, 91 and 121 pixels on a 512 x 512 crop.
+**Frequency domain.** Mirror pad, FFT, centre, multiply by a mask H(u, v), invert, crop. Cutoff D0 = 0.1, 0.2, 0.3 of the Nyquist frequency for ideal, Butterworth (n = 2) and Gaussian masks; HPF = 1 - LPF. The slide example is reproduced with square ideal masks of 61, 91 and 121 pixels on a 512 x 512 crop.
 
 **Experiments.**
 

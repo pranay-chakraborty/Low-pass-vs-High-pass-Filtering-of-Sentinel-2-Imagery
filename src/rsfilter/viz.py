@@ -298,7 +298,7 @@ def fig_spectra(band: np.ndarray, cfg, out: Path) -> Path:
 
 # ----------------------------------------------------------------- figure 4: slide replication
 def fig_square_masks(band: np.ndarray, cfg, out: Path) -> Path:
-    """Square ideal low-pass masks of 61, 91, 121 pixels on the 512 x 512 crop (course slide layout)."""
+    """Square ideal low-pass masks of 61, 91, 121 pixels on the 512 x 512 crop (slide layout)."""
     sides = cfg["filters"]["square_mask_sides"]
     fig, axes = plt.subplots(2, len(sides) + 1, figsize=(3.3 * (len(sides) + 1), 6.8))
     lo, hi = np.percentile(band, [2, 98])
@@ -313,7 +313,7 @@ def fig_square_masks(band: np.ndarray, cfg, out: Path) -> Path:
         axes[1, j].imshow(np.clip((ff.square_lowpass(band, side) - lo) / (hi - lo), 0, 1), cmap="gray")
         _image_axis(axes[1, j], f"Result, {side} x {side} mask")
         scale_bar(axes[1, j], 512, 512)
-    fig.suptitle("Frequency-domain low-pass filtering with square ideal masks (replicating the course slide)")
+    fig.suptitle("Frequency-domain low-pass filtering with square ideal masks (replicating the slide example)")
     fig.tight_layout()
     return _save(fig, out)
 

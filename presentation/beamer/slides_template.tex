@@ -76,7 +76,7 @@
 \titlepage
 \end{frame}
 \note{[Sangeeta | 0:15 | 0:15]\\
-Good morning. We are Group 1, and our project compares low-pass and high-pass filtering on Sentinel-2 imagery over the Aravalli ridge between Gurugram and Faridabad. The course brief asked us to implement both kinds of filter and decide which is most suitable for remote sensing. I will introduce the problem, Sangam will describe the data, Pranay will explain the methods, Aparna and Robin will present the results, and I will close with the recommendation.}
+Good morning. We are Group 1, and our project compares low-pass and high-pass filtering on Sentinel-2 imagery over the Aravalli ridge between Gurugram and Faridabad. The project brief asked us to implement both kinds of filter and decide which is most suitable for remote sensing. I will introduce the problem, Sangam will describe the data, Pranay will explain the methods, Aparna and Robin will present the results, and I will close with the recommendation.}
 
 \begin{frame}{Contents}
 \begin{columns}[T]
@@ -383,10 +383,10 @@ High-boost & $f + k\cdot\text{HPF}_n$ & $n=3,5,7$; $k=0.5,1.0,1.5$ \\
 \end{tabular}
 
 \medskip
-\footnotesize Plus the course-slide example: square ideal low-pass masks of 61, 91 and 121 px on a 512 $\times$ 512 crop.
+\footnotesize Plus the slide example: square ideal low-pass masks of 61, 91 and 121 px on a 512 $\times$ 512 crop.
 \end{frame}
 \note{[Pranay | 0:15 | 7:10]\\
-Together these give <<n_filters>> configurations, covering both families in both domains. We also reproduced the example in the course slides with square ideal masks of 61, 91 and 121 pixels.}
+Together these give <<n_filters>> configurations, covering both families in both domains. We also reproduced the example in the assignment slides with square ideal masks of 61, 91 and 121 pixels.}
 
 \begin{frame}{Five experiments, each with a measure that decides the winner}
 \footnotesize
@@ -459,14 +459,14 @@ High-pass outputs are edge maps. Uniform ground becomes mid-grey and only the ch
 \note{[Aparna | 0:20 | 9:35]\\
 An analyst rarely looks at the bare edge layer, so here it is added back to the image. As k increases, boundaries get crisper while the colours stay the same. At k equal to 1.5 we start to see halos along roads and ridge crests, so a moderate k is better.}
 
-\begin{frame}{The course example reproduced: smaller square mask, blurrier image}
+\begin{frame}{The slide example reproduced: smaller square mask, blurrier image}
 \centering
 \includegraphics[height=0.66\textheight]{fig04_slide_square_masks.png}
 \source{Square ideal low-pass masks of 61, 91 and 121 px (top) and the filtered NIR crop (bottom).}
 \takeaway{\small All three results show a faint ripple texture.}
 \end{frame}
 \note{[Aparna | 0:20 | 9:55]\\
-This reproduces the example from the course slides on our own crop. The top row shows the spectrum and the square masks; white means the frequency is kept. The smallest mask keeps the fewest frequencies and gives the blurriest image. All three results show a faint ripple texture, which the next slide explains.}
+This reproduces the example from the assignment slides on our own crop. The top row shows the spectrum and the square masks; white means the frequency is kept. The smallest mask keeps the fewest frequencies and gives the blurriest image. All three results show a faint ripple texture, which the next slide explains.}
 
 \begin{frame}{A sharp frequency cut causes ringing; smooth masks do not}
 \centering
